@@ -43,7 +43,7 @@ Run these steps in order when scraping a new exam. For DP-600 only Step 4 and 5 
 ### Step 1 — Scrape
 
 ```bash
-python scraper.py --real-profile
+python scraper.py
 ```
 
 Opens your real Edge profile (already logged in to examcademy.com). Clicks "Show Answer" on every question, saves HTML + images to `brons/`.
@@ -103,8 +103,9 @@ Open `http://localhost:8501`.
 ## Switching exams
 
 1. Edit `config.json` — change `exam_code` to the new exam (e.g. `"az-305"`)
-2. Run Steps 1–4 again
-3. The app detects the exam change and clears the old question bank automatically
+2. Delete the `brons/` and `silver/` folders — `brons/` filenames have no exam slug so old pages contaminate the new scrape; `silver/` keeps the old exam's merged JSON which would be stale
+3. Run Steps 1–4 again
+4. The app detects the exam change and clears the old question bank automatically
 
 ---
 
