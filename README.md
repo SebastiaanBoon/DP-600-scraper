@@ -102,10 +102,12 @@ Open `http://localhost:8501`.
 
 ## Switching exams
 
-1. Edit `config.json` — change `exam_code` to the new exam (e.g. `"az-305"`)
-2. Delete the `brons/` and `silver/` folders — `brons/` filenames have no exam slug so old pages contaminate the new scrape; `silver/` keeps the old exam's merged JSON which would be stale
-3. Run Steps 1–4 again
-4. The app detects the exam change and clears the old question bank automatically
+```bash
+python switch_exam.py az-305
+```
+
+Updates `config.json`, wipes stale `brons/` and `silver/` data, and prints the next steps.
+Then run Steps 1–4 as usual. The app detects the exam change and clears the old question bank automatically.
 
 ---
 
@@ -114,6 +116,7 @@ Open `http://localhost:8501`.
 ```
 config.json                ← exam settings (gitignored)
 config.example.json        ← template
+switch_exam.py             ← switches to a new exam (updates config, wipes stale data)
 image_fixups.json          ← image-question answers (written by /analyze-exam-images)
 brons/
   raw/page_N.html          ← saved raw HTML per page
