@@ -1,0 +1,350 @@
+{
+  "dp-600": {
+    "5": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Grouping method", "value": "Domain"}, {"label": "Tool", "value": "The Fabric Admin portal"}]},
+      "dropdown_groups": {
+        "Grouping method": ["Capacity", "Domain", "Tenant"],
+        "Tool": ["OneLake data hub", "The Fabric Admin portal", "The Microsoft Entra admin center"]
+      }
+    },
+    "7": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "AVERAGE('Survey'[Response Value])"}, {"label": "2", "value": "Period,"}], "ordered": true},
+      "available_values": ["AVERAGE('Survey'[Response Value])", "Period,", "CALCULATE", "FILTER", "ALL('Date')"]
+    },
+    "9": {
+      "correct_answer": {"mode": "items", "items": [{"label": "CREATE", "value": "TABLE"}, {"label": "expression", "value": "CASE"}, {"label": "condition", "value": "WHEN(ListPrice > 50 AND ListPrice < 1000) THEN 'medium'"}]},
+      "dropdown_groups": {
+        "CREATE": ["FUNCTION", "PROCEDURE", "TABLE", "VIEW"],
+        "expression": ["CASE", "COALESCE", "IIF", "SET"],
+        "condition": ["WHEN(ListPrice > 50 AND ListPrice < 1000) THEN 'medium'", "WHEN(ListPrice >= 50 AND ListPrice < 1000) THEN 'medium'", "WHEN ListPrice BETWEEN 50 AND 1000 THEN 'medium'"]
+      }
+    },
+    "22": {
+      "correct_answer": {"mode": "answer", "value": "B"}
+    },
+    "23": {
+      "correct_answer": {"mode": "items", "items": [{"label": "DataEngineers", "value": "Read All Apache Spark"}, {"label": "DataAnalysts", "value": "Build Reports on the default dataset"}, {"label": "DataScientists", "value": "Read All Apache Spark"}]},
+      "dropdown_groups": {
+        "DataEngineers": ["Build Reports on the default dataset", "Read All Apache Spark", "Read All SQL analytics endpoint data"],
+        "DataAnalysts": ["Build Reports on the default dataset", "Read All Apache Spark", "Read All SQL analytics endpoint data"],
+        "DataScientists": ["Build Reports on the default dataset", "Read All Apache Spark", "Read All SQL analytics endpoint data"]
+      }
+    },
+    "31": {
+      "correct_answer": {"mode": "items", "items": [{"label": "df2 =", "value": "df.withColumn"}, {"label": "cast method", "value": ".cast('date')"}, {"label": "filter expression", "value": ".filter(\"fareAmount > 0 AND farAmount < 100\")"}]},
+      "dropdown_groups": {
+        "df2 =": ["df.columns", "df.select", "df.withColumn", "df.withColumnsRenamed"],
+        "cast method": [".alias('date')", ".cast('date')", ".cast('pickupDate')", ".getfield('date')"],
+        "filter expression": [".filter(\"fareAmount > 0 AND farAmount < 100\")", ".filter(col('fareAmount').contains('1..100'))", ".when(df.fareAmount > 0 AND fareAmount < 100)", ".where(df.fareAmount.isin([1,100]))"]
+      }
+    },
+    "34": {
+      "correct_answer": {"mode": "items", "items": [{"label": "[Answer choice] of the transformation steps in the query will fold.", "value": "Some"}, {"label": "The Added custom step will be performed in [answer choice].", "value": "the Microsoft Power Query engine"}]},
+      "dropdown_groups": {
+        "[Answer choice] of the transformation steps in the query will fold.": ["All", "None", "Some"],
+        "The Added custom step will be performed in [answer choice].": ["each lakehouse's query engine", "the Microsoft Power Query engine", "the source lakehouse query engine"]
+      }
+    },
+    "37": {
+      "correct_answer": {"mode": "items", "items": [{"label": "embeds existing Power BI report", "value": "No"}, {"label": "creates a Power BI report", "value": "Yes"}, {"label": "displays summary of DataFrame", "value": "Yes"}]}
+    },
+    "38": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "DEFINE"}, {"label": "2", "value": "EVALUATE"}, {"label": "3", "value": "FILTER"}, {"label": "4", "value": "SUMMARIZE"}], "ordered": true},
+      "available_values": ["DEFINE", "EVALUATE", "FILTER", "SUMMARIZE", "CALCULATE", "RETURN"]
+    },
+    "40": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Query class", "value": "Value"}, {"label": "function", "value": "NativeQuery"}, {"label": "option key", "value": "EnableFolding"}, {"label": "option value", "value": "true"}]},
+      "dropdown_groups": {
+        "Query class": ["Binary", "Table", "Value"],
+        "function": ["NativeQuery", "SqlExpression", "OpenRowset"],
+        "option key": ["EnableFolding", "CreateNavigationProperties", "CommandTimeout"],
+        "option value": ["true", "false", "null"]
+      }
+    },
+    "44": {
+      "correct_answer": {"mode": "items", "items": [{"label": "The Direct Lake fallback behavior is set to", "value": "Automatic"}, {"label": "The query for the table visual is executed by using", "value": "Direct Lake"}]},
+      "dropdown_groups": {
+        "The Direct Lake fallback behavior is set to": ["Automatic", "DirectLakeOnly", "DirectQueryOnly"],
+        "The query for the table visual is executed by using": ["the composite model", "Direct Lake", "Direct Query"]
+      }
+    },
+    "55": {
+      "correct_answer": {"mode": "items", "items": [{"label": "statement 1", "value": "Yes"}, {"label": "statement 2", "value": "Yes"}, {"label": "statement 3", "value": "Yes"}]}
+    },
+    "58": {
+      "correct_answer": {"mode": "items", "items": [{"label": "The Spark engine will read only the 'SalesOrderNumber', 'OrderDate', 'CustomerName', 'UnitPrice' columns from Sales_raw.csv.", "value": "No"}, {"label": "Removing the partition will reduce the execution time of the query.", "value": "No"}, {"label": "Adding inferSchema= 'true' to the options will increase the execution time of the query.", "value": "Yes"}]}
+    },
+    "64": {
+      "correct_answer": {"mode": "items", "items": [{"label": "VAR _LYSales =", "value": "CALCULATE"}, {"label": "RETURN", "value": "_LYSales"}]},
+      "dropdown_groups": {
+        "VAR _LYSales =": ["CALCULATE", "CALCULATETABLE", "FILTER", "SUMMARIZE", "SUMMARIZECOLUMNS"],
+        "RETURN": ["[Total Sales]", "_LYSales", "{ _LYSales }", "VAR"]
+      }
+    },
+    "65": {
+      "correct_answer": {"mode": "items", "items": [{"label": ".mode", "value": "(\"append\")"}, {"label": ".option", "value": "(\"mergeSchema\",\"true\")"}]},
+      "dropdown_groups": {
+        ".mode": ["(\"append\")", "(\"error\")", "(\"errorifexists\")", "(\"ignore\")", "(\"overwrite\")"],
+        ".option": ["(\"mergeSchema\",\"false\")", "(\"mergeSchema\",\"true\")", "(\"overwriteSchema\",\"false\")", "(\"overwriteSchema\",\"true\")"]
+      }
+    },
+    "70": {
+      "correct_answer": {"mode": "items", "items": [{"label": "HighestSellingPrice function", "value": "GREATEST"}, {"label": "TradePrice function", "value": "COALESCE"}]},
+      "dropdown_groups": {
+        "HighestSellingPrice function": ["COALESCE", "GREATEST", "IIF", "MAX"],
+        "TradePrice function": ["CHOOSE", "COALESCE", "IIF", "MAX"]
+      }
+    },
+    "77": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "From Performance analyzer, capture a recording."}, {"label": "2", "value": "Sort the Duration (ms) column in descending order."}, {"label": "3", "value": "Copy the first query to DAX Studio."}, {"label": "4", "value": "Enable Query Timings and Server Timings. Run the query."}, {"label": "5", "value": "View the Server Timings tab."}], "ordered": true},
+      "available_values": ["From Performance analyzer, capture a recording.", "Sort the Duration (ms) column in descending order.", "Copy the first query to DAX Studio.", "Enable Query Timings and Server Timings. Run the query.", "View the Server Timings tab."]
+    },
+    "79": {
+      "correct_answer": {"mode": "items", "items": [{"label": "outer function", "value": "CALCULATE"}, {"label": "inner function", "value": "SELECTEDMEASURE"}]},
+      "dropdown_groups": {
+        "outer function": ["CALCULATE", "GENERATE", "MEASURE"],
+        "inner function": ["COMBINEVALUES", "SELECTEDMEASURE", "SELECTEDVALUE"]
+      }
+    },
+    "80": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "Open the model in Tabular Editor."}, {"label": "2", "value": "Select the Address column in SalesAddress."}, {"label": "3", "value": "Set Object Level Security to None for SalesRegionManager."}], "ordered": true},
+      "available_values": ["Open the model in Tabular Editor.", "Select the Address column in SalesAddress.", "Set Object Level Security to None for SalesRegionManager.", "Open the model in Power BI Desktop.", "Grant RLS access to SalesRegionManager."]
+    },
+    "82": {
+      "correct_answer": {"mode": "items", "items": [{"label": "ResearchReviewersGroup1", "value": "Viewer"}, {"label": "ResearchReviewersGroup2", "value": "Contributor"}]},
+      "dropdown_groups": {
+        "ResearchReviewersGroup1": ["Contributor", "Member", "Viewer"],
+        "ResearchReviewersGroup2": ["Contributor", "Member", "Viewer"]
+      }
+    },
+    "85": {
+      "correct_answer": {"mode": "items", "items": [{"label": "CREATE TABLE statement", "value": "CREATE TABLE dbo.POSCustomers AS SELECT"}, {"label": "FROM clause", "value": "FROM lakehouse1.dbo.customer"}]},
+      "dropdown_groups": {
+        "CREATE TABLE statement": ["CREATE TABLE dbo.POSCustomers", "CREATE TABLE dbo.POSCustomers AS CLONE OF", "CREATE TABLE dbo.POSCustomers AS SELECT"],
+        "FROM clause": ["FROM dbo.Customer", "FROM dbo.POSCustomers", "FROM lakehouse1.dbo.customer"]
+      }
+    },
+    "87": {
+      "correct_answer": {"mode": "items", "items": [{"label": "date truncation function", "value": "DATETRUNC"}, {"label": "DATENAME parameter", "value": "weekday"}]},
+      "dropdown_groups": {
+        "date truncation function": ["DATE_BUCKET", "DATEFROMPARTS", "DATEPART", "DATETRUNC"],
+        "DATENAME parameter": ["day", "dayofyear", "weekday"]
+      }
+    },
+    "88": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Authentication method", "value": "Single sign-on (SSO) authentication"}, {"label": "Mode", "value": "Direct Lake"}]},
+      "dropdown_groups": {
+        "Authentication method": ["Basic authentication", "Service principal authentication", "Single sign-on (SSO) authentication"],
+        "Mode": ["Direct Lake", "DirectQuery", "Import"]
+      }
+    },
+    "89": {
+      "correct_answer": {"mode": "items", "items": [{"label": "df method", "value": "withColumn"}, {"label": "column reference", "value": "col"}, {"label": "type cast", "value": "cast"}]},
+      "dropdown_groups": {
+        "df method": ["select", "withColumn", "withColumnRenamed", "filter"],
+        "column reference": ["col", "column", "lit", "expr"],
+        "type cast": ["astype", "cast", "coerce", "convert"]
+      }
+    },
+    "98": {
+      "correct_answer": {"mode": "items", "items": [{"label": "ChargedQuantity function", "value": "COALESCE"}, {"label": "OrderPrice function", "value": "LEAST"}]},
+      "dropdown_groups": {
+        "ChargedQuantity function": ["CHOOSE", "COALESCE", "IIF"],
+        "OrderPrice function": ["COALESCE", "LEAST", "MIN"]
+      }
+    },
+    "111": {
+      "correct_answer": {"mode": "items", "items": [{"label": "TransactionKey", "value": "Remove the column."}, {"label": "SaleDateTime", "value": "Split the column."}]},
+      "dropdown_groups": {
+        "TransactionKey": ["Change the data type of the column.", "Remove the column.", "Split the column.", "Truncate the data."],
+        "SaleDateTime": ["Change the data type of the column.", "Remove the column.", "Split the column.", "Truncate the data."]
+      }
+    },
+    "113": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Dimension.GetDirectReports is a scalar T-SQL function.", "value": "Yes"}, {"label": "The Dimension.GetDirectReports function will run only once when the query runs.", "value": "No"}, {"label": "The output rows will include at least one row for each row in the Dimension.Employee table.", "value": "Yes"}]}
+    },
+    "114": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "SELECT TOP(1000) CustomerAltKey, COUNT(*)"}, {"label": "2", "value": "FROM DimCustomer"}, {"label": "3", "value": "GROUP BY CustomerAltKey"}, {"label": "4", "value": "HAVING COUNT(*) > 1"}], "ordered": true},
+      "available_values": ["SELECT TOP(1000) CustomerAltKey, COUNT(*)", "FROM DimCustomer", "GROUP BY CustomerAltKey", "HAVING COUNT(*) > 1", "ORDER BY CustomerAltKey", "WHERE COUNT(*) > 1"]
+    },
+    "115": {
+      "correct_answer": {"mode": "items", "items": [{"label": "The Spark engine will read only the 'SalesOrderNumber', 'OrderDate','CustomerName', 'UnitPrice' columns from Sales_raw.csv.", "value": "Yes"}, {"label": "The Year column replaces the OrderDate column in the table.", "value": "No"}, {"label": "Adding inferSchema='true' to the options will increase the execution time of the query.", "value": "Yes"}]}
+    },
+    "117": {
+      "correct_answer": {"mode": "items", "items": [{"label": "format", "value": "delta"}, {"label": "save path", "value": "tables/productline2"}]},
+      "dropdown_groups": {
+        "format": ["csv", "delta", "parquet"],
+        "save path": ["productline2", "tables/productline2", "tables/research/productline2"]
+      }
+    },
+    "121": {
+      "correct_answer": {"mode": "items", "items": [{"label": "A replica of dbo.FactSales is created in the test schema by copying the metadata only.", "value": "Yes"}, {"label": "Additional schema changes to dbo.FactSales will also apply to test.FactSales.", "value": "No"}, {"label": "Additional data changes to dbo.FactSales will also apply to test.FactSales.", "value": "No"}]}
+    },
+    "139": {
+      "correct_answer": {"mode": "items", "items": [{"label": "definition.pbir is in the PBIR-Legacy format.", "value": "No"}, {"label": "The semantic model referenced by definition.pbir is located in the Power BI service.", "value": "No"}, {"label": "When the related report is opened, Power BI Desktop will open the semantic model in full edit mode.", "value": "Yes"}]}
+    },
+    "140": {
+      "correct_answer": {"mode": "items", "items": [{"label": "The query excludes sales that have a Status of Cancelled.", "value": "Yes"}, {"label": "The query calculates the total sales of each product category for the last 30 days.", "value": "Yes"}, {"label": "The query includes product categories that have had zero sales during the last 30 days.", "value": "No"}]}
+    },
+    "141": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Querying SQL views from the warehouse of the model will cause a fallback to [answer choice] mode.", "value": "DirectQuery"}, {"label": "Row and column security is [answer choice].", "value": "undefined"}]},
+      "dropdown_groups": {
+        "Querying SQL views from the warehouse of the model will cause a fallback to [answer choice] mode.": ["Automatic", "Direct Lake", "DirectQuery"],
+        "Row and column security is [answer choice].": ["configured to use object-level security (OLS)", "configured to use row-level security (RLS)", "undefined"]
+      }
+    },
+    "142": {
+      "correct_answer": {"mode": "items", "items": [{"label": "DF1 will be deployed to Workspace_TEST.", "value": "No"}, {"label": "Data from Model1 will be deployed to Workspace_TEST.", "value": "Yes"}, {"label": "The scheduled refresh policy for Model1 will be deployed to Workspace_TEST.", "value": "Yes"}]}
+    },
+    "145": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Employee column to match on", "value": "Division"}, {"label": "Join Kind", "value": "Inner (only matching rows)"}]},
+      "dropdown_groups": {
+        "Employee column to match on": ["ID", "Division", "Title Detail", "Role", "Department"],
+        "Join Kind": ["Left Outer (all from first, matching from second)", "Right Outer (all from second, matching from first)", "Full Outer (all rows from both)", "Inner (only matching rows)", "Left Anti (rows only in first)", "Right Anti (rows only in second)"]
+      }
+    },
+    "146": {
+      "correct_answer": {"mode": "items", "items": [{"label": "The statement returns Region values when a Sales item has a RefundStatus of Refunded.", "value": "Yes"}, {"label": "The statement only returns TransactionDate values that occurred during the current year.", "value": "Yes"}, {"label": "The TotalRevenue calculation aggregates SalesAmount values that have a RefundStatus of Refunded.", "value": "No"}]}
+    },
+    "150": {
+      "correct_answer": {"mode": "items", "items": [{"label": "CustomerCode", "value": "Dimension"}, {"label": "CustomerName", "value": "Dimension"}, {"label": "SaleDate", "value": "Dimension"}]},
+      "dropdown_groups": {
+        "CustomerCode": ["Dimension", "Fact", "Factless fact", "Junk dimension"],
+        "CustomerName": ["Dimension", "Fact", "Factless fact", "Junk dimension"],
+        "SaleDate": ["Dimension", "Fact", "Factless fact", "Junk dimension"]
+      }
+    },
+    "151": {
+      "correct_answer": {"mode": "items", "items": [{"label": "User2 is assigned the Contributor role for Workspace3.", "value": "No"}, {"label": "User3 is assigned the Viewer role for Workspace3.", "value": "No"}, {"label": "User3 is assigned the Contributor role for Workspace1.", "value": "No"}]}
+    },
+    "152": {
+      "correct_answer": {"mode": "items", "items": [{"label": "TotalSalesAmt expression", "value": "Sum(s.Quantity * s.UnitPrice)"}, {"label": "JOIN type", "value": "Inner"}]},
+      "dropdown_groups": {
+        "TotalSalesAmt expression": ["s.Quantity * S.UnitPrice", "Sum(s.Quantity * s.UnitPrice)", "Sum(s.quantity) * s.UnitPrice", "Sum(s.Quantity) * Sum(s.UnitPrice)"],
+        "JOIN type": ["Cross", "Full outer", "Inner", "Right outer"]
+      }
+    },
+    "158": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "Group by CustomerID, use the All Rows operation, and calculate the max version date per customer ID."}, {"label": "2", "value": "Expand the All Rows detail column."}, {"label": "3", "value": "Filter the query where the version date value equals the max version date value."}, {"label": "4", "value": "Remove the max version date column."}], "ordered": true},
+      "available_values": ["Group by CustomerID, use the All Rows operation, and calculate the max version date per customer ID.", "Expand the All Rows detail column.", "Filter the query where the version date value equals the max version date value.", "Remove the max version date column.", "Group by CustomerID and calculate the max version date per customer ID.", "Remove duplicates based on CustomerID."]
+    },
+    "159": {
+      "correct_answer": {"mode": "items", "items": [{"label": "customers is a pandas DataFrame.", "value": "No"}, {"label": "If a delta table named Customers does NOT exist, an error will be generated.", "value": "No"}, {"label": "The source data is located in the customers folder in a container named contacts.", "value": "Yes"}]}
+    },
+    "162": {
+      "correct_answer": {"mode": "items", "items": [{"label": "AS keyword", "value": "BEGIN"}, {"label": "SELECT modifier", "value": "DISTINCT"}]},
+      "dropdown_groups": {
+        "AS keyword": ["BEGIN", "BEGIN DISTRIBUTED TRANSACTION", "SET"],
+        "SELECT modifier": ["DISTINCT", "GROUP BY", "TOP (100) PERCENT WITH TIES"]
+      }
+    },
+    "163": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "Assign Workspace1 to a Fabric capacity."}, {"label": "2", "value": "Connect Workspace1 to a Git provider."}, {"label": "3", "value": "Sync Workspace1 with the repository."}], "ordered": true},
+      "available_values": ["Assign Workspace1 to a Fabric capacity.", "Connect Workspace1 to a Git provider.", "Sync Workspace1 with the repository.", "Create a workspace identity.", "Enable Git integration in tenant settings."]
+    },
+    "165": {
+      "correct_answer": {"mode": "items", "items": [{"label": "join type", "value": "left outer join"}, {"label": "join condition", "value": "A.AddressID = CA.AddressID"}]},
+      "dropdown_groups": {
+        "join type": ["full outer join", "inner join", "left outer join"],
+        "join condition": ["A.AddressID = CA.AddressID", "C.AddressID = CA.AddressID", "C.CustomerID = A.CustomerID"]
+      }
+    },
+    "166": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Create workspace and assign to Test stage", "value": "Click + in the Test stage"}, {"label": "Configure deployment rule for Date1", "value": "Use the deployment rules settings in the Test stage"}]},
+      "dropdown_groups": {
+        "Create workspace and assign to Test stage": ["Click + in the Development stage", "Click + in the Test stage", "Click + in the Enterprise stage"],
+        "Configure deployment rule for Date1": ["Use the deployment rules settings in the Test stage", "Edit the Date1 parameter in Power Query", "Use the deployment rules settings in the Development stage"]
+      }
+    },
+    "167": {
+      "correct_answer": {"mode": "items", "items": [{"label": "MilesPerTrip calculation", "value": "(sum(t.tripDistance)/count(t.tripID))"}, {"label": "grouping clause", "value": "group by"}]},
+      "dropdown_groups": {
+        "MilesPerTrip calculation": ["(count(t.tripID) / sum(t.tripDistance))", "(sum(t.tripDistance)/count(t.tripID))", "Sum(t.tripDistance)/t.tripID"],
+        "grouping clause": ["group by", "order by", "where"]
+      }
+    },
+    "170": {
+      "correct_answer": {"mode": "items", "items": [{"label": "ItemName expression", "value": ",try_cast(item_name as varchar(20))"}, {"label": "PurchaseDate expression", "value": ",convert(varchar, purchase_date, 7)"}]},
+      "dropdown_groups": {
+        "ItemName expression": [",convert(varchar(20), item_name)", ",convert(varchar(max), item_name)", ",try_cast(item_name as varchar(20))"],
+        "PurchaseDate expression": [",convert(varchar, purchase_date, 7)", ",convert(varchar, purchase_date, 109)", ",convert(varchar, purchase_date, 112)"]
+      }
+    },
+    "172": {
+      "correct_answer": {"mode": "items", "items": [{"label": "SELECT function", "value": "YEAR"}, {"label": "GROUP BY clause", "value": "ROLLUP(YEAR(SO.ModifiedDate), P.Name)"}]},
+      "dropdown_groups": {
+        "SELECT function": ["CAST", "CONVERT", "YEAR"],
+        "GROUP BY clause": ["CUBE(YEAR(SO.ModifiedDate), P.Name)", "GROUPING SETS ((YEAR(SO.ModifiedDate), P.Name), (YEAR(SO.ModifiedDate)))", "ROLLUP(YEAR(SO.ModifiedDate), P.Name)", "YEAR(SO.Modified Date), P.Name"]
+      }
+    },
+    "173": {
+      "correct_answer": {"mode": "items", "items": [{"label": "PrevMeterReading operator", "value": "| extend"}, {"label": "column projection operator", "value": "| project"}]},
+      "dropdown_groups": {
+        "PrevMeterReading operator": ["| evaluate", "| extend", "| lookup", "| project", "| summarize"],
+        "column projection operator": ["| evaluate", "| extend", "| lookup", "| project", "| summarize"]
+      }
+    },
+    "176": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Group1", "value": "Contributor"}, {"label": "Group2", "value": "Admin"}, {"label": "Group3", "value": "Member"}]},
+      "dropdown_groups": {
+        "Group1": ["Admin", "Contributor", "Member", "Viewer"],
+        "Group2": ["Admin", "Contributor", "Member", "Viewer"],
+        "Group3": ["Admin", "Contributor", "Member", "Viewer"]
+      }
+    },
+    "178": {
+      "correct_answer": {"mode": "items", "items": [{"label": "A [answer choice] was added to the Value measure.", "value": "dynamic format string"}, {"label": "The Value measure can return values formatted as [answer choice].", "value": "percentages or whole numbers"}]},
+      "dropdown_groups": {
+        "A [answer choice] was added to the Value measure.": ["calculation group", "data category", "dynamic format string", "synonym"],
+        "The Value measure can return values formatted as [answer choice].": ["percentages only", "percentages or decimals", "whole numbers only", "percentages or whole numbers"]
+      }
+    },
+    "180": {
+      "correct_answer": {"mode": "items", "items": [{"label": "JOIN type", "value": "LEFT OUTER JOIN"}, {"label": "filter clause", "value": "HAVING"}]},
+      "dropdown_groups": {
+        "JOIN type": ["CROSS JOIN", "INNER JOIN", "LEFT OUTER JOIN", "RIGHT OUTER JOIN"],
+        "filter clause": ["CONTAINS", "HAVING", "LIMIT", "WHERE"]
+      }
+    },
+    "181": {
+      "correct_answer": {"mode": "items", "items": [{"label": "DBUser can read the data in Lakehouse1 by using the [Answer choice].", "value": "OneLake endpoint"}, {"label": "DBUser can query the data in Lakehouse1 by using [Answer choice].", "value": "OneLake file explorer"}]},
+      "dropdown_groups": {
+        "DBUser can read the data in Lakehouse1 by using the [Answer choice].": ["default semantic model", "OneLake endpoint", "Tabular Data Stream (TDS) endpoint"],
+        "DBUser can query the data in Lakehouse1 by using [Answer choice].": ["a KQL queryset", "OneLake file explorer", "Microsoft SQL Server Management Studio (SSMS)"]
+      }
+    },
+    "183": {
+      "correct_answer": {"mode": "items", "items": [{"label": "PriceRange =", "value": "CASE"}, {"label": "before '$250+'", "value": "ELSE"}]},
+      "dropdown_groups": {
+        "PriceRange =": ["BEGIN", "CASE", "IF", "SWITCH"],
+        "before '$250+'": ["ELSE", "END", "THEN", "WHEN"]
+      }
+    },
+    "190": {
+      "correct_answer": {"mode": "items", "items": [{"label": "SELECT modifier", "value": "Top (3)"}, {"label": "grouping clause", "value": "GROUP BY company"}, {"label": "ordering clause", "value": "ORDER BY sum(tripDistance)"}]},
+      "dropdown_groups": {
+        "SELECT modifier": ["FETCH NEXT 3 ROWS ONLY", "Limit (3)", "Top (3)"],
+        "grouping clause": ["GROUP BY company", "GROUP BY TaxiCompany", "ORDER BY tripDistance"],
+        "ordering clause": ["GROUP BY company", "ORDER BY sum(tripDistance)", "ORDER BY tripDistance"]
+      }
+    },
+    "193": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Model1", "value": "Enable OneLake integration."}, {"label": "Workspace1", "value": "Change the license mode to Fabric capacity."}]},
+      "dropdown_groups": {
+        "Model1": ["Enable OneLake integration.", "Enable query caching.", "Enable query scale-out."],
+        "Workspace1": ["Change the license mode to Fabric capacity.", "Create a workspace identity.", "Enable authentication by using OneLake user-delegated SAS tokens."]
+      }
+    },
+    "195": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "weatherdata"}, {"label": "2", "value": "| extend Delta_temperature = Temperature - prev(Temperature)"}, {"label": "3", "value": "| summarize Delta_temperature = sum(Temperature) -sum(prev(Temperature)) by Datetime"}, {"label": "4", "value": "| sort by Datetime asc"}], "ordered": true},
+      "available_values": ["weatherdata", "| extend Delta_temperature = Temperature - prev(Temperature)", "| summarize Delta_temperature = sum(Temperature) -sum(prev(Temperature)) by Datetime", "| sort by Datetime asc", "| where City == 'Copenhagen'", "| filter Datetime > ago(30d)"]
+    },
+    "197": {
+      "correct_answer": {"mode": "items", "items": [{"label": "window function", "value": "Row_window_session"}, {"label": "comparison operator", "value": "=="}]},
+      "dropdown_groups": {
+        "window function": ["Row_cumsum", "Row_rank_dense", "Row_rank_min", "Row_window_session"],
+        "comparison operator": ["==", ">", ">="]
+      }
+    }
+  }
+}

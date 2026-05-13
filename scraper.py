@@ -1,5 +1,5 @@
 """
-Bronze layer scraper for DP-600 exam questions from examcademy.com
+Bronze layer scraper for ExamCademy questions
 
 Modes:
   python scraper.py                # Open Edge, log in with scraper profile, scrape
@@ -8,14 +8,13 @@ Modes:
   python scraper.py --cdp          # Connect to existing Edge via CDP (port 9222)
 
 --real-profile is the most reliable mode:
-  - Closes running Edge windows, launches Edge with your real profile
+    - Uses your real Edge profile when possible
   - All your cookies/session are already present — no manual login needed
   - Run: python scraper.py --real-profile
 """
 
 import argparse
 import json
-import random
 import re
 import subprocess
 import time
@@ -26,16 +25,17 @@ from pathlib import Path
 from bs4 import BeautifulSoup, Tag
 from playwright.sync_api import sync_playwright, BrowserContext, Page
 
-BASE_URL = "https://examcademy.com"
-EXAM_PATH = "/exams/microsoft/dp-600"
+# Defaults — all overridden by config.json
+_DEFAULT_BASE_URL = "https://examcademy.com"
+_DEFAULT_EXAM_PATH = "/exams/microsoft/dp-600"
+_DEFAULT_TOTAL_PAGES = 8
 AUTH_DOMAIN = "auth.examcademy.com"
-TOTAL_PAGES = 8
 
 BRONS_DIR = Path("brons")
 RAW_DIR = BRONS_DIR / "raw"
 IMAGES_DIR = BRONS_DIR / "images"
 CONFIG_PATH = Path("config.json")
-SCRAPER_PROFILE_DIR = Path.home() / ".dp600_scraper"
+SCRAPER_PROFILE_DIR = Path.home() / ".examcademy_scraper"
 EDGE_REAL_PROFILE_DIR = Path.home() / "AppData" / "Local" / "Microsoft" / "Edge" / "User Data"
 
 _STEALTH_SCRIPT = """
@@ -50,13 +50,41 @@ if (!window.chrome) { window.chrome = {runtime: {}}; }
 # Config
 # ---------------------------------------------------------------------------
 
+def _normalize_exam_path(path: str) -> str:
+    value = (path or _DEFAULT_EXAM_PATH).strip()
+    if not value.startswith("/"):
+        value = "/" + value
+    return value.rstrip("/")
+
+
+def _exam_slug(exam_path: str) -> str:
+    leaf = _normalize_exam_path(exam_path).split("/")[-1].strip().lower()
+    safe = re.sub(r"[^a-z0-9-]+", "-", leaf).strip("-")
+    return safe or "exam"
+
+
+def _exam_display_name(config: dict) -> str:
+    if config.get("exam_name"):
+        return str(config["exam_name"]).strip()
+    return _exam_slug(config.get("exam_path", EXAM_PATH)).upper()
+
 def load_config() -> dict:
     if CONFIG_PATH.exists():
         cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
         for k in ("cookie", "cookies", "_comment", "_how_to_get_cookie"):
             cfg.pop(k, None)
-        return cfg
-    return {"base_url": BASE_URL, "exam_path": EXAM_PATH, "total_pages": TOTAL_PAGES}
+    else:
+        cfg = {}
+
+    # Derive exam_path from exam_code (only field required in config.json)
+    exam_code = cfg.get("exam_code", "").strip().lower()
+    if exam_code and "exam_path" not in cfg:
+        cfg["exam_path"] = f"/exams/microsoft/{exam_code}"
+
+    cfg["base_url"] = _DEFAULT_BASE_URL
+    cfg["exam_path"] = _normalize_exam_path(cfg.get("exam_path", _DEFAULT_EXAM_PATH))
+    cfg["total_pages"] = int(cfg.get("total_pages", 0))  # 0 = auto-detect
+    return cfg
 
 
 # ---------------------------------------------------------------------------
@@ -156,13 +184,19 @@ def _build_question(el, page_num, url, scraped_at, next_answers, next_choices) -
     qid = _extract_question_id(el)
     images_question, images_answer = _extract_images_by_section(el)
     images_all = _merge_image_lists(images_question, images_answer)
+    question_content = _extract_question_content(el)
     return {
         "question_number": _extract_number(el),
-        "question_text": _extract_question_text(el),
+        "question_text": question_content["text"],
+        "question_markdown": question_content["markdown"],
+        "question_html": question_content["html"],
         "options": next_choices.get(qid) or _extract_options(el),
         "correct_answer": next_answers.get(qid) or _extract_correct_answer(el),
         "explanation": _extract_explanation(el),
         "topic": _extract_topic(el),
+        "dropdown_groups": {},
+        "available_values": [],
+        "statements": [],
         "images": images_all,
         "images_question": images_question,
         "images_answer": images_answer,
@@ -195,16 +229,46 @@ def _extract_number(el) -> int | None:
     return None
 
 
-def _extract_question_text(el) -> str:
+def _extract_question_content(el) -> dict[str, str]:
     content = el.find("div", class_="question-content")
     if not content:
-        return ""
-    parts = [
-        child.get_text(" ", strip=True)
-        for child in content.children
-        if getattr(child, "name", None) == "p"
-    ]
-    return " ".join(parts).strip()
+        return {"text": "", "markdown": "", "html": ""}
+
+    html = content.decode_contents().strip()
+    markdown_lines: list[str] = []
+
+    for child in content.children:
+        if not getattr(child, "name", None):
+            text = str(child).strip()
+            if text:
+                markdown_lines.append(text)
+            continue
+
+        name = child.name.lower()
+        if name == "h2":
+            markdown_lines.append(f"## {child.get_text(' ', strip=True)}")
+        elif name == "p":
+            inner = child.get_text("\n", strip=True).replace("\r", "")
+            if inner:
+                markdown_lines.append(inner)
+        elif name in {"ul", "ol"}:
+            for li in child.find_all("li", recursive=False):
+                value = li.get_text(" ", strip=True)
+                if value:
+                    markdown_lines.append(f"- {value}")
+        elif name == "table":
+            for row in child.find_all("tr"):
+                cells = [cell.get_text(" ", strip=True) for cell in row.find_all(["th", "td"])]
+                if cells:
+                    markdown_lines.append(" | ".join(cells))
+        else:
+            value = child.get_text(" ", strip=True)
+            if value:
+                markdown_lines.append(value)
+
+    markdown = "\n\n".join(line for line in markdown_lines if line).strip()
+    text = re.sub(r"\s+", " ", BeautifulSoup(html, "lxml").get_text(" ", strip=True)).strip()
+    return {"text": text, "markdown": markdown, "html": html}
 
 
 def _extract_options(el) -> dict:
@@ -224,31 +288,43 @@ def _extract_options(el) -> dict:
 
 def _extract_correct_answer(el) -> str | list | None:
     mc = el.find("div", class_="mc-question")
-    if not mc:
-        return None
+    if mc:
+        def is_marked_correct(li: Tag) -> bool:
+            classes = li.get("class", []) or []
+            text_classes = " ".join(classes).lower()
+            if any(k in text_classes for k in ["correct", "missed", "selected", "answer"]):
+                return True
+            style = (li.get("style") or "").lower()
+            if "font-weight" in style and ("700" in style or "bold" in style):
+                return True
+            return False
 
-    def is_marked_correct(li: Tag) -> bool:
-        classes = li.get("class", []) or []
-        text_classes = " ".join(classes).lower()
-        if any(k in text_classes for k in ["correct", "missed", "selected", "answer"]):
-            return True
-        style = (li.get("style") or "").lower()
-        if "font-weight" in style and ("700" in style or "bold" in style):
-            return True
-        return False
+        correct = []
+        for li in mc.find_all("li"):
+            strong = li.find("strong")
+            if strong and is_marked_correct(li):
+                letter = strong.get_text(strip=True).upper()
+                if letter in "ABCDE":
+                    correct.append(letter)
 
-    correct = []
-    for li in mc.find_all("li"):
-        strong = li.find("strong")
-        if strong and is_marked_correct(li):
-            letter = strong.get_text(strip=True).upper()
-            if letter in "ABCDE":
-                correct.append(letter)
+        if len(correct) == 1:
+            return correct[0]
+        if len(correct) > 1:
+            return correct
 
-    if len(correct) == 1:
-        return correct[0]
-    if len(correct) > 1:
-        return correct
+    # Also check the revealed-content div for text-based answers (non-MC questions
+    # where the answer is shown as plain text, e.g. "B" or "Yes / No").
+    revealed = el.select_one("div.answer-reveal div.revealed-content")
+    if revealed and not revealed.find("img"):
+        text = revealed.get_text(" ", strip=True)
+        text = re.sub(r"\bHide Answer\b", "", text, flags=re.IGNORECASE).strip()
+        text = re.sub(r"^\s*Answer\s*:\s*", "", text, flags=re.IGNORECASE).strip()
+        if text:
+            # Single letter → MC-style answer
+            if re.fullmatch(r"[A-F]", text.upper()):
+                return text.upper()
+            return text
+
     return None
 
 
@@ -401,6 +477,8 @@ def _extract_images_by_section(el) -> tuple[list[str], list[str]]:
     return question_urls, answer_urls
 
 
+
+
 # ---------------------------------------------------------------------------
 # Image download
 # ---------------------------------------------------------------------------
@@ -449,22 +527,19 @@ def scrape_all_browser(page: Page, config: dict) -> None:
     RAW_DIR.mkdir(exist_ok=True)
 
     manifest = {
-        "exam": "DP-600: Microsoft Fabric Analytics Engineer",
+        "exam": _exam_display_name(config),
         "source": f"{base_url}{exam_path}",
         "scraped_at": datetime.now(timezone.utc).isoformat(),
         "pages": [],
     }
     total_questions = 0
 
-    for page_num in range(1, total_pages + 1):
+    page_num = 0
+    while True:
+        page_num += 1
         url = f"{base_url}{exam_path}/{page_num}"
-
-        if page_num > 1:
-            delay = random.uniform(8, 20)
-            print(f"\n  Waiting {delay:.0f}s...")
-            time.sleep(delay)
-
-        print(f"\n[{page_num}/{total_pages}]  {url}")
+        page_label = f"{page_num}" if not total_pages else f"{page_num}/{total_pages}"
+        print(f"\n[{page_label}]  {url}")
 
         html = ""
         try:
@@ -522,11 +597,20 @@ def scrape_all_browser(page: Page, config: dict) -> None:
         manifest["pages"].append({"page": page_num, "url": url, "question_count": len(questions)})
         total_questions += len(questions)
 
+        # Stop when explicit total_pages reached, or no questions found (auto-detect)
+        if total_pages and page_num >= total_pages:
+            break
+        if not total_pages and not questions and page_num > 1:
+            json_path.unlink(missing_ok=True)
+            print(f"  No questions on page {page_num} — done.")
+            page_num -= 1
+            break
+
     manifest["total_questions"] = total_questions
     (BRONS_DIR / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
     print(f"\n{'='*60}")
-    print(f"Bronze complete: {total_questions} questions across {total_pages} pages")
+    print(f"Bronze complete: {total_questions} questions across {page_num} pages")
     print(f"  Raw HTML  ->  {RAW_DIR}/")
     print(f"  JSON      ->  {BRONS_DIR}/page_N.json")
 
@@ -536,10 +620,7 @@ def scrape_all_browser(page: Page, config: dict) -> None:
 # ---------------------------------------------------------------------------
 
 def acquire_and_scrape_real_profile(config: dict) -> None:
-    """Kill running Edge, relaunch with real user profile (already logged in)."""
-    print("Closing any running Edge windows...")
-    subprocess.run(["taskkill", "/F", "/IM", "msedge.exe"], capture_output=True)
-    time.sleep(2)
+    """Launch a controllable Edge window with the real user profile when available."""
 
     if not EDGE_REAL_PROFILE_DIR.exists():
         print(f"  [ERROR] Real Edge profile not found at: {EDGE_REAL_PROFILE_DIR}")
@@ -549,13 +630,19 @@ def acquire_and_scrape_real_profile(config: dict) -> None:
 
     print(f"  Launching Edge with real profile: {EDGE_REAL_PROFILE_DIR}")
     with sync_playwright() as pw:
-        ctx = pw.chromium.launch_persistent_context(
-            str(EDGE_REAL_PROFILE_DIR),
-            channel="msedge",
-            headless=False,
-            args=["--disable-blink-features=AutomationControlled"],
-            ignore_default_args=["--enable-automation"],
-        )
+        try:
+            ctx = pw.chromium.launch_persistent_context(
+                str(EDGE_REAL_PROFILE_DIR),
+                channel="msedge",
+                headless=False,
+                args=["--disable-blink-features=AutomationControlled"],
+                ignore_default_args=["--enable-automation"],
+            )
+        except Exception as exc:
+            print(f"  [ERROR] Could not open controllable Edge with real profile: {exc}")
+            print("  Leave your normal Edge windows open and use --cdp if you want to attach to an existing debug session,")
+            print("  or close only the locked profile window and retry --real-profile.")
+            return
         ctx.add_init_script(_STEALTH_SCRIPT)
         page = ctx.new_page()
 
@@ -656,16 +743,19 @@ def scrape_all_cdp(pw, config: dict) -> None:
 # Reparse mode
 # ---------------------------------------------------------------------------
 
-def reparse_from_html() -> None:
+def reparse_from_html(config: dict) -> None:
     html_files = sorted(RAW_DIR.glob("page_*.html"), key=lambda p: int(p.stem.split("_")[1]))
     if not html_files:
         print(f"No HTML files found in {RAW_DIR}. Run without --reparse first.")
         return
 
+    base_url = config.get("base_url", BASE_URL)
+    exam_path = config.get("exam_path", EXAM_PATH)
+
     total_questions = 0
     for html_path in html_files:
         page_num = int(html_path.stem.split("_")[1])
-        url = f"{BASE_URL}{EXAM_PATH}/{page_num}"
+        url = f"{base_url}{exam_path}/{page_num}"
         html = html_path.read_text(encoding="utf-8")
         questions = parse_questions(html, page_num, url)
         _download_images(questions)
@@ -691,7 +781,7 @@ def reparse_from_html() -> None:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="DP-600 bronze layer scraper")
+    parser = argparse.ArgumentParser(description="ExamCademy bronze layer scraper")
     parser.add_argument("--real-profile", action="store_true",
                         help="Use your real Edge profile (already logged in) — RECOMMENDED")
     parser.add_argument("--reparse", action="store_true",
@@ -703,7 +793,7 @@ if __name__ == "__main__":
     config = load_config()
 
     if args.reparse:
-        reparse_from_html()
+        reparse_from_html(config)
     elif args.cdp:
         with sync_playwright() as pw:
             scrape_all_cdp(pw, config)

@@ -1,0 +1,23 @@
+# Personal config
+config.json
+
+# Scraped data (large, requires examcademy account)
+brons/
+
+# Generated silver layer
+silver/
+
+# Databases
+*.db
+*.sqlite3
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Claude Code internal
+.claude/
+
+# Editor
+.vscode/

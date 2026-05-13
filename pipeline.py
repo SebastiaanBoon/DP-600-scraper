@@ -9,11 +9,31 @@ Output:
 """
 
 import json
+import re
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlparse
 
 BRONS_DIR = Path("brons")
 SILVER_DIR = Path("silver")
+CONFIG_PATH = Path("config.json")
+DEFAULT_SOURCE = "https://examcademy.com/exams/microsoft/dp-600"
+
+
+def _exam_slug_from_source(source_url: str) -> str:
+    try:
+        path = urlparse(source_url).path.strip("/")
+    except Exception:
+        path = ""
+    slug = path.split("/")[-1] if path else ""
+    slug = re.sub(r"[^a-z0-9-]+", "-", slug.lower()).strip("-")
+    return slug or "exam"
+
+
+def _load_config() -> dict:
+    if not CONFIG_PATH.exists():
+        return {}
+    return json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
 
 
 def load_bronze_pages() -> list[dict]:
@@ -30,28 +50,35 @@ def load_bronze_pages() -> list[dict]:
     return pages
 
 
+def _record_fingerprint(question: dict) -> str:
+    """Return a stable signature so only truly identical records are deduplicated."""
+    payload = {
+        "question_number": question.get("question_number"),
+        "source_page": question.get("source_page"),
+        "source_url": question.get("source_url"),
+        "question_text": (question.get("question_text") or "").strip(),
+        "options": question.get("options") or {},
+        "correct_answer": question.get("correct_answer"),
+        "explanation": question.get("explanation"),
+        "topic": question.get("topic"),
+        "images_question": question.get("images_question") or [],
+        "images_answer": question.get("images_answer") or [],
+    }
+    return json.dumps(payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+
+
 def merge(pages: list[dict]) -> list[dict]:
     all_questions: list[dict] = []
-    seen_numbers: set[int] = set()
-    seen_texts: set[str] = set()
+    seen_records: set[str] = set()
 
     for page in pages:
         for q in page.get("questions", []):
-            q_num = q.get("question_number")
-            q_text = (q.get("question_text") or "").strip()[:120]
-
-            # Deduplicate by question number (primary) or text snippet (fallback)
-            if q_num is not None and q_num in seen_numbers:
-                print(f"  [SKIP] duplicate question_number={q_num}")
-                continue
-            if q_text and q_text in seen_texts:
-                print(f"  [SKIP] duplicate text snippet for Q{q_num}")
+            fingerprint = _record_fingerprint(q)
+            if fingerprint in seen_records:
+                print(f"  [SKIP] exact duplicate question_number={q.get('question_number')}")
                 continue
 
-            if q_num is not None:
-                seen_numbers.add(q_num)
-            if q_text:
-                seen_texts.add(q_text)
+            seen_records.add(fingerprint)
 
             all_questions.append(q)
 
@@ -70,13 +97,23 @@ def run() -> None:
 
     # Pull metadata from manifest if available
     manifest_path = BRONS_DIR / "manifest.json"
-    source_url = "https://examcademy.com/exams/microsoft/dp-600"
+    source_url = DEFAULT_SOURCE
+    exam_name = None
     if manifest_path.exists():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         source_url = manifest.get("source", source_url)
+        exam_name = manifest.get("exam")
+
+    if not exam_name:
+        cfg = _load_config()
+        exam_name = cfg.get("exam_name")
+
+    exam_slug = _exam_slug_from_source(source_url)
+    if not exam_name:
+        exam_name = exam_slug.upper()
 
     output = {
-        "exam": "DP-600: Microsoft Fabric Analytics Engineer",
+        "exam": exam_name,
         "source": source_url,
         "total_questions": len(questions),
         "merged_at": datetime.now(timezone.utc).isoformat(),
@@ -97,7 +134,7 @@ def run() -> None:
         "questions": questions,
     }
 
-    out_path = SILVER_DIR / "dp600_questions.json"
+    out_path = SILVER_DIR / f"{exam_slug}_questions.json"
     out_path.write_text(json.dumps(output, indent=2, ensure_ascii=False), encoding="utf-8")
 
     # Summary stats
