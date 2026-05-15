@@ -1,4 +1,3 @@
-import os
 import re
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
@@ -6,14 +5,13 @@ from typing import Any, Dict, List, Tuple
 import streamlit as st
 
 from db import ExamDB
-from exam_parser import evaluate_answer, parse_docx_questions
+from exam_parser import evaluate_answer
 from exam_sources import load_exam_questions
 
 
 APP_TITLE = "Practice Exam Trainer"
 APP_ROOT = Path(__file__).resolve().parent
 DEFAULT_DATA_ROOT = APP_ROOT.parent
-DEFAULT_DOCX = "DP600_Question_Bank.docx"
 
 
 def _read_config_exam_slug() -> str:
@@ -38,57 +36,35 @@ def _safe_index(options: List[str], value: str) -> int:
 
 def load_questions_if_needed(
     db: ExamDB,
-    source_mode: str,
     data_root: str,
     exam_slug: str,
-    docx_path: str,
 ) -> Tuple[bool, str]:
-    if source_mode == "Exam JSON":
-        silver_path = Path(data_root).resolve() / "silver" / f"{exam_slug}_questions.json"
-        if not silver_path.exists():
-            return False, f"No exam JSON questions found for slug '{exam_slug}' under {data_root}."
+    silver_path = Path(data_root).resolve() / "silver" / f"{exam_slug}_questions.json"
+    if not silver_path.exists():
+        return False, f"No questions found for slug '{exam_slug}' under {data_root}."
 
-        silver_mtime = str(silver_path.stat().st_mtime)
-        # Fast path: skip reload if DB has questions AND silver file hasn't changed since last load
-        # Mtime is stored in DB (persists across app restarts, unlike session_state)
-        if db.has_questions() and db.get_meta("silver_mtime") == silver_mtime:
-            return True, "Questions already loaded from database."
-
-        # Slow path: load from silver (only when DB is empty or silver file changed)
-        loaded = load_exam_questions(data_root, exam_slug)
-        if not loaded:
-            return False, f"No exam JSON questions found for slug '{exam_slug}' under {data_root}."
-
-        stored_slug = db.get_meta("exam_slug") or ""
-        if db.has_questions() and stored_slug and stored_slug != exam_slug:
-            # Exam switched — wipe old questions so they don't mix
-            db.replace_question_bank(loaded)
-            msg = f"Switched to {exam_slug.upper()}: loaded {len(loaded)} questions (previous bank cleared)."
-        elif db.has_questions():
-            db.upsert_questions(loaded)
-            msg = f"Refreshed question bank with {len(loaded)} questions."
-        else:
-            db.upsert_questions(loaded)
-            msg = f"Loaded {len(loaded)} questions from silver/bronze for {exam_slug}."
-
-        db.set_meta("silver_mtime", silver_mtime)
-        db.set_meta("exam_slug", exam_slug)
-        return True, msg
-
-    if not os.path.exists(docx_path):
-        return False, f"DOCX file not found: {docx_path}"
-    docx_mtime = str(Path(docx_path).stat().st_mtime)
-    if db.has_questions() and db.get_meta("silver_mtime") == docx_mtime:
+    silver_mtime = str(silver_path.stat().st_mtime)
+    if db.has_questions() and db.get_meta("silver_mtime") == silver_mtime:
         return True, "Questions already loaded from database."
-    questions = parse_docx_questions(docx_path)
-    if not questions:
-        return False, "No questions parsed from DOCX."
-    if db.has_questions():
-        db.upsert_questions(questions)
+
+    loaded = load_exam_questions(data_root, exam_slug)
+    if not loaded:
+        return False, f"No questions found for slug '{exam_slug}' under {data_root}."
+
+    stored_slug = db.get_meta("exam_slug") or ""
+    if db.has_questions() and stored_slug and stored_slug != exam_slug:
+        db.replace_question_bank(loaded)
+        msg = f"Switched to {exam_slug.upper()}: loaded {len(loaded)} questions (previous bank cleared)."
+    elif db.has_questions():
+        db.upsert_questions(loaded)
+        msg = f"Refreshed question bank with {len(loaded)} questions."
     else:
-        db.upsert_questions(questions)
-    db.set_meta("silver_mtime", docx_mtime)
-    return True, f"Loaded {len(questions)} questions from {docx_path}."
+        db.upsert_questions(loaded)
+        msg = f"Loaded {len(loaded)} questions for {exam_slug}."
+
+    db.set_meta("silver_mtime", silver_mtime)
+    db.set_meta("exam_slug", exam_slug)
+    return True, msg
 
 
 def get_status_icon(answer_row: Dict[str, Any]) -> str:
@@ -348,32 +324,15 @@ def main() -> None:
 
     db = ExamDB("exam_app.db")
 
-    source_mode = st.sidebar.radio(
-        "Question source",
-        ["Exam JSON", "DOCX"],
-        index=0,
-    )
-    if source_mode == "Exam JSON":
-        data_root = st.sidebar.text_input("Data root", value=str(DEFAULT_DATA_ROOT))
-        exam_slug = st.sidebar.text_input("Exam slug", value=DEFAULT_EXAM_SLUG)
-        docx_path = ""
-        source_ref = str((Path(data_root).resolve() / "silver" / f"{exam_slug}_questions.json").resolve())
-        st.sidebar.caption("OCR is attempted for bronze answer images when available.")
-    else:
-        data_root = str(DEFAULT_DATA_ROOT)
-        exam_slug = ""
-        docx_path = st.sidebar.text_input("DOCX path", value=DEFAULT_DOCX)
-        source_ref = docx_path
+    data_root = str(DEFAULT_DATA_ROOT)
+    exam_slug = DEFAULT_EXAM_SLUG
+    source_ref = str((Path(data_root).resolve() / "silver" / f"{exam_slug}_questions.json").resolve())
 
-    # Only run the expensive question-loading once per session (or when source file changes).
-    if source_mode == "Exam JSON":
-        silver_path = Path(data_root).resolve() / "silver" / f"{exam_slug}_questions.json"
-        file_mtime = silver_path.stat().st_mtime if silver_path.exists() else 0
-    else:
-        file_mtime = Path(docx_path).stat().st_mtime if Path(docx_path).exists() else 0
-    cache_key = (source_mode, data_root, exam_slug, docx_path, file_mtime)
+    silver_path = Path(data_root).resolve() / "silver" / f"{exam_slug}_questions.json"
+    file_mtime = silver_path.stat().st_mtime if silver_path.exists() else 0
+    cache_key = (data_root, exam_slug, file_mtime)
     if st.session_state.get("_questions_cache_key") != cache_key:
-        ready, msg = load_questions_if_needed(db, source_mode, data_root, exam_slug, docx_path)
+        ready, msg = load_questions_if_needed(db, data_root, exam_slug)
         st.session_state["_questions_cache_key"] = cache_key
         st.session_state["_questions_ready"] = ready
         st.session_state["_questions_msg"] = msg
@@ -409,7 +368,7 @@ def main() -> None:
     with st.expander("➕ Start New Session", expanded=True):
         col_name, col_btn = st.columns([3, 1])
         with col_name:
-            default_session_name = f"My {(exam_slug.upper() if source_mode == 'Exam JSON' else 'Practice')} Session"
+            default_session_name = f"My {exam_slug.upper()} Session"
             name = st.text_input("Session name", value=default_session_name, key="new_session_name")
         with col_btn:
             if st.button("Create", type="primary", use_container_width=True):
