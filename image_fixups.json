@@ -133,16 +133,15 @@
       "correct_answer": {"mode": "items", "items": [{"label": "embeds existing Power BI report", "value": "No"}, {"label": "creates a Power BI report", "value": "Yes"}, {"label": "displays summary of DataFrame", "value": "Yes"}]}
     },
     "38": {
-      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "DEFINE"}, {"label": "2", "value": "EVALUATE"}, {"label": "3", "value": "FILTER"}, {"label": "4", "value": "SUMMARIZE"}], "ordered": true},
-      "available_values": ["DEFINE", "EVALUATE", "FILTER", "SUMMARIZE", "CALCULATE", "RETURN"]
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "DEFINE"}, {"label": "2", "value": "EVALUATE"}, {"label": "3", "value": "SUMMARIZE"}], "ordered": true},
+      "available_values": ["DEFINE", "EVALUATE", "FILTER", "SUMMARIZE", "TABLE"]
     },
     "40": {
-      "correct_answer": {"mode": "items", "items": [{"label": "Query class", "value": "Value"}, {"label": "function", "value": "NativeQuery"}, {"label": "option key", "value": "EnableFolding"}, {"label": "option value", "value": "true"}]},
+      "correct_answer": {"mode": "items", "items": [{"label": "Query class", "value": "Value"}, {"label": "function", "value": "NativeQuery"}, {"label": "option key", "value": "EnableFolding"}]},
       "dropdown_groups": {
-        "Query class": ["Binary", "Table", "Value"],
-        "function": ["NativeQuery", "SqlExpression", "OpenRowset"],
-        "option key": ["EnableFolding", "CreateNavigationProperties", "CommandTimeout"],
-        "option value": ["true", "false", "null"]
+        "Query class": ["EnableFolding", "NativeQuery", "Optimize", "Record", "StopFolding", "Table", "Value"],
+        "function": ["EnableFolding", "NativeQuery", "Optimize", "Record", "StopFolding", "Table", "Value"],
+        "option key": ["EnableFolding", "NativeQuery", "Optimize", "Record", "StopFolding", "Table", "Value"]
       }
     },
     "44": {
