@@ -100,13 +100,15 @@ Open `http://localhost:8501`.
 
 ---
 
-## Switching exams
+## Switching exams (or re-scraping the current one)
 
 ```bash
-python switch_exam.py az-305
+python switch_exam.py az-305   # switch to a different exam
+python switch_exam.py dp-600   # re-scrape the current exam from scratch
 ```
 
 Updates `config.json`, wipes stale `brons/` and `silver/` data, and prints the next steps.
+Works for both switching to a new exam and forcing a clean re-scrape of the current one.
 Then run Steps 1–4 as usual. The app detects the exam change and clears the old question bank automatically.
 
 ---

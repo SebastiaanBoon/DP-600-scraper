@@ -1,8 +1,9 @@
 """
-Switch to a different exam.
+Switch to a different exam, or re-scrape the current one from scratch.
 
 Usage:
-    python switch_exam.py az-305
+    python switch_exam.py az-305   # switch to a new exam
+    python switch_exam.py dp-600   # re-scrape the current exam from scratch
 
 Updates config.json and removes stale brons/ and silver/ data.
 """
@@ -28,13 +29,13 @@ def main():
 
     cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8")) if CONFIG_PATH.exists() else {}
     old_code = cfg.get("exam_code", "")
-    if old_code == exam_code:
-        print(f"Already set to {exam_code!r} — nothing to do.")
-        sys.exit(0)
 
     cfg["exam_code"] = exam_code
     CONFIG_PATH.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
-    print(f"config.json: {old_code!r} → {exam_code!r}")
+    if old_code == exam_code:
+        print(f"config.json: {exam_code!r} (unchanged) — wiping scraped data for a fresh re-scrape")
+    else:
+        print(f"config.json: {old_code!r} → {exam_code!r}")
 
     for folder in ("brons", "silver"):
         p = Path(folder)

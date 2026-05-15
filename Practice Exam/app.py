@@ -563,12 +563,12 @@ def main() -> None:
 
     with col_actions[2]:
         if st.button("← Prev", use_container_width=True):
-            st.session_state["question_idx"] = max(0, idx - 1)
+            st.session_state["question_idx"] = (idx - 1) % len(round_questions)
             st.rerun()
 
     with col_actions[3]:
         if st.button("Next →", use_container_width=True):
-            st.session_state["question_idx"] = min(len(round_questions) - 1, idx + 1)
+            st.session_state["question_idx"] = (idx + 1) % len(round_questions)
             st.rerun()
 
     with col_actions[4]:
