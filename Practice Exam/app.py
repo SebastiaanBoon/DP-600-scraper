@@ -207,11 +207,9 @@ def render_answer_editor(question: Dict[str, Any], existing_answer: Dict[str, An
             # Options are images — show local images labelled A/B/C/D then radio for selection
             q_images = question.get("images_question") or []
             opt_images = q_images[len(q_images) - len(options):]
-            cols = st.columns(min(len(options), 2))
-            for i, (o, img_path) in enumerate(zip(options, opt_images)):
-                with cols[i % 2]:
-                    st.markdown(f"**{o['key']}.**")
-                    st.image(img_path, width=400)
+            for o, img_path in zip(options, opt_images):
+                st.markdown(f"**{o['key']}.**")
+                st.image(img_path, use_container_width=True)
             selected = st.radio(
                 "Your choice",
                 choices,
