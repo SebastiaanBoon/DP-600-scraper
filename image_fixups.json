@@ -44,7 +44,11 @@
       }
     },
     "22": {
-      "correct_answer": {"mode": "answer", "value": "B"}
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "ROW_NUMBER()"}, {"label": "2", "value": "WHERE X = 1"}]},
+      "dropdown_groups": {
+        "1": ["LAST_Value()", "NTILE()", "ROW_NUMBER()"],
+        "2": ["Having Max(LastUpdated) = 1", "WHERE LastUpdated = Max(LastUpdated)", "WHERE X = 1"]
+      }
     },
     "23": {
       "correct_answer": {"mode": "items", "items": [{"label": "DataEngineers", "value": "Read All Apache Spark"}, {"label": "DataAnalysts", "value": "Build Reports on the default dataset"}, {"label": "DataScientists", "value": "Read All Apache Spark"}]},

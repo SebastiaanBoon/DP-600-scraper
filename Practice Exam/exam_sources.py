@@ -224,19 +224,26 @@ def load_exam_questions(data_root: str | Path, exam_slug: str) -> List[Dict[str,
         question["statements"] = list(question.get("statements") or [])
         question["select_count"] = select_count
 
-        # Guard: if HOTSPOT correct_answer items don't appear in the dropdown groups,
-        # the bronze parser extracted HTML attributes instead of display text — clear it
-        # so the question shows as unanswered rather than silently wrong.
-        # Only apply when the fixup did NOT supply a correct_answer (trust fixup data).
-        if (not fixup.get("correct_answer")
-                and correct_answer.get("mode") == "items"
-                and question["dropdown_groups"]):
-            dg = question["dropdown_groups"]
-            all_values_valid = all(
-                item.get("value") in dg.get(item.get("label"), [])
-                for item in correct_answer.get("items", [])
-            )
-            if not all_values_valid:
+        # Guard: clear obviously wrong correct_answer values that come from bronze parsing
+        # errors. Only applied when the fixup did NOT supply a correct_answer.
+        if not fixup.get("correct_answer"):
+            # Case 1: HOTSPOT items whose values don't appear in their dropdown group
+            # (bronze parser extracted HTML value attrs like "lv"/"v" instead of text)
+            if correct_answer.get("mode") == "items" and question["dropdown_groups"]:
+                dg = question["dropdown_groups"]
+                all_values_valid = all(
+                    item.get("value") in dg.get(item.get("label"), [])
+                    for item in correct_answer.get("items", [])
+                )
+                if not all_values_valid:
+                    question["correct_answer"] = {}
+                    correct_answer = {}
+            # Case 2: single-letter "answer" mode with no options — misidentified as MC
+            # (e.g. a HOTSPOT image question where the image analysis returned "B")
+            elif (correct_answer.get("mode") == "answer"
+                    and re.fullmatch(r"[A-Fa-f]", str(correct_answer.get("value", "")))
+                    and not options
+                    and not question["dropdown_groups"]):
                 question["correct_answer"] = {}
                 correct_answer = {}
 
