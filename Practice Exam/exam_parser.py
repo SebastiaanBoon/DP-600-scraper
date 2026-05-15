@@ -417,6 +417,12 @@ def evaluate_answer(question: Dict[str, Any], user_answer: Dict[str, Any]) -> Di
     correct = question.get("correct_answer", {}) or {}
     mode = correct.get("mode")
 
+    if not correct or not mode:
+        return {
+            "is_correct": False,
+            "feedback": "No answer key is available for this question yet.",
+        }
+
     if not user_answer:
         return {
             "is_correct": False,
