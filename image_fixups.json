@@ -182,6 +182,10 @@
       "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "From Performance analyzer, capture a recording."}, {"label": "2", "value": "Sort the Duration (ms) column in descending order."}, {"label": "3", "value": "Copy the first query to DAX Studio."}, {"label": "4", "value": "Enable Query Timings and Server Timings. Run the query."}, {"label": "5", "value": "View the Server Timings tab."}], "ordered": true},
       "available_values": ["From Performance analyzer, capture a recording.", "Sort the Duration (ms) column in descending order.", "Copy the first query to DAX Studio.", "Enable Query Timings and Server Timings. Run the query.", "View the Server Timings tab."]
     },
+    "100": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Orchestration pipeline", "value": "A schedule"}, {"label": "Bronze layer", "value": "A pipeline Copy activity"}, {"label": "Silver layer", "value": "A pipeline Dataflow activity"}, {"label": "Gold layer", "value": "A pipeline Stored procedure activity"}]},
+      "available_values": ["A schedule", "A pipeline Copy activity", "A pipeline Dataflow activity", "A pipeline Stored procedure activity", "A Spark job definition", "An Invoke pipeline activity"]
+    },
     "79": {
       "correct_answer": {"mode": "items", "items": [{"label": "outer function", "value": "CALCULATE"}, {"label": "inner function", "value": "SELECTEDMEASURE"}]},
       "dropdown_groups": {

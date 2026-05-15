@@ -246,19 +246,24 @@ def load_exam_questions(data_root: str | Path, exam_slug: str) -> List[Dict[str,
                     and not question["dropdown_groups"]):
                 question["correct_answer"] = {}
                 correct_answer = {}
-            # Case 3: mode=items with no dropdown_groups/available_values/statements
-            # and at least one value is clearly garbled (empty, ≤3 chars, or starts
-            # with a parsing artifact like "|", ":", "//")
-            elif (correct_answer.get("mode") == "items"
-                    and not question["dropdown_groups"]
-                    and not question["available_values"]
-                    and not question["statements"]):
+            # Case 3: mode=items where item values are clearly garbled.
+            # Covers two sub-cases:
+            #   a) no dropdown_groups/available_values/statements and values are
+            #      empty, ≤3 chars, or start with parsing artifacts (|, :, //)
+            #   b) available_values IS set but ALL item values are empty strings
+            #      (bronze found the slot labels but not the correct values)
+            elif correct_answer.get("mode") == "items":
+                items = correct_answer.get("items", [])
                 def _is_garbled(v: str) -> bool:
                     v = (v or "").strip()
                     return (not v or len(v) <= 3
                             or v.startswith("|") or v.startswith(":")
                             or v.startswith("//") or "�" in v)
-                if any(_is_garbled(i.get("value", "")) for i in correct_answer.get("items", [])):
+                no_interactive = (not question["dropdown_groups"]
+                                  and not question["available_values"]
+                                  and not question["statements"])
+                all_empty = items and all(not (i.get("value") or "").strip() for i in items)
+                if (no_interactive and any(_is_garbled(i.get("value", "")) for i in items)) or all_empty:
                     question["correct_answer"] = {}
                     correct_answer = {}
 
