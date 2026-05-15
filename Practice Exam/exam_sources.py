@@ -224,6 +224,22 @@ def load_exam_questions(data_root: str | Path, exam_slug: str) -> List[Dict[str,
         question["statements"] = list(question.get("statements") or [])
         question["select_count"] = select_count
 
+        # Guard: if HOTSPOT correct_answer items don't appear in the dropdown groups,
+        # the bronze parser extracted HTML attributes instead of display text — clear it
+        # so the question shows as unanswered rather than silently wrong.
+        # Only apply when the fixup did NOT supply a correct_answer (trust fixup data).
+        if (not fixup.get("correct_answer")
+                and correct_answer.get("mode") == "items"
+                and question["dropdown_groups"]):
+            dg = question["dropdown_groups"]
+            all_values_valid = all(
+                item.get("value") in dg.get(item.get("label"), [])
+                for item in correct_answer.get("items", [])
+            )
+            if not all_values_valid:
+                question["correct_answer"] = {}
+                correct_answer = {}
+
         # Auto-derive interactive fields from correct_answer for image-only questions
         ca_items = correct_answer.get("items", []) if correct_answer.get("mode") == "items" else []
         if ca_items and not question["dropdown_groups"] and not question["available_values"] and not question["statements"]:

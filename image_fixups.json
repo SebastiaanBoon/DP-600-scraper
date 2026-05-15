@@ -14,6 +14,27 @@
         "2": ["LastCurrentDate,", "NumberOfMonths,", "Period,"]
       }
     },
+    "62": {
+      "correct_answer": {"mode": "items", "items": [{"label": "User1", "value": "ReadAll"}, {"label": "User2", "value": "ReadData"}]},
+      "dropdown_groups": {
+        "User1": ["Read", "ReadAll", "ReadData"],
+        "User2": ["Read", "ReadAll", "ReadData"]
+      }
+    },
+    "153": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Employees", "value": "Column-level security"}, {"label": "Sales", "value": "Row-level security (RLS)"}]},
+      "dropdown_groups": {
+        "Employees": ["Column-level security", "Item permissions", "Row-level security (RLS)", "Workspace permissions"],
+        "Sales": ["Column-level security", "Item permissions", "Row-level security (RLS)", "Workspace permissions"]
+      }
+    },
+    "19": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Connection", "value": "https"}, {"label": "Endpoint", "value": "dfs"}]},
+      "dropdown_groups": {
+        "Connection": ["abfs", "abfss", "https"],
+        "Endpoint": ["blob", "dfs", "file"]
+      }
+    },
     "9": {
       "correct_answer": {"mode": "items", "items": [{"label": "CREATE", "value": "TABLE"}, {"label": "expression", "value": "CASE"}, {"label": "condition", "value": "WHEN(ListPrice > 50 AND ListPrice < 1000) THEN 'medium'"}]},
       "dropdown_groups": {
