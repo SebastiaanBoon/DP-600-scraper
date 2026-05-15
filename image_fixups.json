@@ -14,6 +14,62 @@
         "2": ["LastCurrentDate,", "NumberOfMonths,", "Period,"]
       }
     },
+    "28": {
+      "correct_answer": {"mode": "items", "items": [{"label": "The relationship between OrderItem and Product must be based on:", "value": "The ProductID column"}, {"label": "The Company entity must be:", "value": "Omitted"}]},
+      "dropdown_groups": {
+        "The relationship between OrderItem and Product must be based on:": ["The ProductID column", "Both the CompanyID and the ProductID columns", "A new key that combines the CompanyID and ProductID columns"],
+        "The Company entity must be:": ["Omitted", "Denormalized into the Product entity only", "Denormalized into the Customer and Product entities"]
+      }
+    },
+    "41": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Remove the files", "value": "Run the VACUUM command on a schedule."}, {"label": "Combine the files", "value": "Run the OPTIMIZE command on a schedule."}]},
+      "dropdown_groups": {
+        "Remove the files": ["Run the VACUUM command on a schedule.", "Run the OPTIMIZE command on a schedule."],
+        "Combine the files": ["Run the VACUUM command on a schedule.", "Run the OPTIMIZE command on a schedule."]
+      }
+    },
+    "51": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "ALTER"}, {"label": "2", "value": "SCHEMA::schemaA"}]},
+      "dropdown_groups": {
+        "1": ["ALTER", "CONNECT", "EXECUTE"],
+        "2": ["DATABASE::schemaA", "OBJECT::schemaA", "SCHEMA::schemaA"]
+      }
+    },
+    "68": {
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "delta"}, {"label": "2", "value": "sales"}]},
+      "dropdown_groups": {
+        "1": ["csv", "delta", "parquet"],
+        "2": ["sales", "files/sales", "tables/sales"]
+      }
+    },
+    "74": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Customers", "value": "Type 2"}, {"label": "Products", "value": "Type 1"}]},
+      "dropdown_groups": {
+        "Customers": ["Type 1", "Type 2", "Type 3"],
+        "Products": ["Type 1", "Type 2", "Type 3"]
+      }
+    },
+    "149": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Mode", "value": "Import"}, {"label": "Query Caching", "value": "On"}]},
+      "dropdown_groups": {
+        "Mode": ["Direct Lake", "DirectQuery", "Import"],
+        "Query Caching": ["Capacity default", "Off", "On"]
+      }
+    },
+    "186": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Customers", "value": "Type 2"}, {"label": "Products", "value": "Type 1"}]},
+      "dropdown_groups": {
+        "Customers": ["Type 1", "Type 2", "Type 3"],
+        "Products": ["Type 1", "Type 2", "Type 3"]
+      }
+    },
+    "198": {
+      "correct_answer": {"mode": "items", "items": [{"label": "Datasource1", "value": "A Dataflow Gen2"}, {"label": "Datasource2", "value": "An eventstream"}]},
+      "dropdown_groups": {
+        "Datasource1": ["A Dataflow Gen2", "An eventstream", "A pipeline", "A Spark notebook"],
+        "Datasource2": ["A Dataflow Gen2", "An eventstream", "A pipeline", "A Spark notebook"]
+      }
+    },
     "62": {
       "correct_answer": {"mode": "items", "items": [{"label": "User1", "value": "ReadAll"}, {"label": "User2", "value": "ReadData"}]},
       "dropdown_groups": {

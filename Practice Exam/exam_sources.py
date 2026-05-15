@@ -246,6 +246,21 @@ def load_exam_questions(data_root: str | Path, exam_slug: str) -> List[Dict[str,
                     and not question["dropdown_groups"]):
                 question["correct_answer"] = {}
                 correct_answer = {}
+            # Case 3: mode=items with no dropdown_groups/available_values/statements
+            # and at least one value is clearly garbled (empty, ≤3 chars, or starts
+            # with a parsing artifact like "|", ":", "//")
+            elif (correct_answer.get("mode") == "items"
+                    and not question["dropdown_groups"]
+                    and not question["available_values"]
+                    and not question["statements"]):
+                def _is_garbled(v: str) -> bool:
+                    v = (v or "").strip()
+                    return (not v or len(v) <= 3
+                            or v.startswith("|") or v.startswith(":")
+                            or v.startswith("//") or "�" in v)
+                if any(_is_garbled(i.get("value", "")) for i in correct_answer.get("items", [])):
+                    question["correct_answer"] = {}
+                    correct_answer = {}
 
         # Auto-derive interactive fields from correct_answer for image-only questions
         ca_items = correct_answer.get("items", []) if correct_answer.get("mode") == "items" else []
