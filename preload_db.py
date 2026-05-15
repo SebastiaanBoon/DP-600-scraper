@@ -5,14 +5,16 @@ starts instantly without re-running OCR on every restart.
 import json
 import re
 import sys
-sys.path.insert(0, 'Practice Exam')
 from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPT_DIR / 'Practice Exam'))
+
 from db import ExamDB
 from exam_sources import load_exam_questions
+DATA_ROOT = str(SCRIPT_DIR)
 
-DATA_ROOT = '.'
-
-_config_path = Path('config.json')
+_config_path = SCRIPT_DIR / 'config.json'
 if _config_path.exists():
     _cfg = json.loads(_config_path.read_text(encoding='utf-8'))
     _code = _cfg.get('exam_code') or _cfg.get('exam_path', '/exams/microsoft/dp-600').split('/')[-1]
@@ -30,7 +32,7 @@ print(f'Loaded {len(loaded)} questions')
 have_answer = sum(1 for q in loaded if q.get('correct_answer'))
 print(f'With correct_answer: {have_answer}/{len(loaded)}')
 
-db = ExamDB('Practice Exam/exam_app.db')
+db = ExamDB(str(SCRIPT_DIR / 'Practice Exam' / 'exam_app.db'))
 stored_slug = db.get_meta('exam_slug') or ''
 if db.has_questions() and stored_slug and stored_slug != EXAM_SLUG:
     print(f'Exam changed ({stored_slug} → {EXAM_SLUG}): replacing question bank...')

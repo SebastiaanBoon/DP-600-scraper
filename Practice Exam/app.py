@@ -103,7 +103,10 @@ def render_question_display(question: Dict[str, Any]) -> None:
                 st.markdown(line)
 
     question_images = question.get("images_question") or []
-    for img_path in question_images:
+    options = question.get("options") or []
+    n_image_opts = sum(1 for o in options if str(o.get("text", "")).strip().startswith("!["))
+    body_images = question_images[: len(question_images) - n_image_opts] if n_image_opts else question_images
+    for img_path in body_images:
         st.image(img_path, width=600)
 
 
@@ -198,14 +201,33 @@ def render_answer_editor(question: Dict[str, Any], existing_answer: Dict[str, An
         choices = [""] + [o["key"] for o in options]
         key_to_text = {o["key"]: o["text"] for o in options}
         default_key = payload.get("selected_option", "")
-        
-        selected = st.radio(
-            "Options",
-            choices,
-            index=_safe_index(choices, default_key),
-            format_func=lambda x: "Choose..." if x == "" else f"{x}. {key_to_text.get(x, '')}",
-            key=f"{key_prefix}_single",
-        )
+        image_opts = all(str(o.get("text", "")).strip().startswith("![") for o in options)
+
+        if image_opts:
+            # Options are images — show local images labelled A/B/C/D then radio for selection
+            q_images = question.get("images_question") or []
+            opt_images = q_images[len(q_images) - len(options):]
+            cols = st.columns(min(len(options), 2))
+            for i, (o, img_path) in enumerate(zip(options, opt_images)):
+                with cols[i % 2]:
+                    st.markdown(f"**{o['key']}.**")
+                    st.image(img_path, width=400)
+            selected = st.radio(
+                "Your choice",
+                choices,
+                index=_safe_index(choices, default_key),
+                format_func=lambda x: "Choose..." if x == "" else x,
+                key=f"{key_prefix}_single",
+                horizontal=True,
+            )
+        else:
+            selected = st.radio(
+                "Options",
+                choices,
+                index=_safe_index(choices, default_key),
+                format_func=lambda x: "Choose..." if x == "" else f"{x}. {key_to_text.get(x, '')}",
+                key=f"{key_prefix}_single",
+            )
         out["selected_option"] = selected
         out["selected_option_text"] = key_to_text.get(selected, "")
 
@@ -322,7 +344,7 @@ def main() -> None:
     st.title(APP_TITLE)
     st.caption("Local-first practice app with persistent exam sessions, retries, and explanations.")
 
-    db = ExamDB("exam_app.db")
+    db = ExamDB(str(APP_ROOT / "exam_app.db"))
 
     data_root = str(DEFAULT_DATA_ROOT)
     exam_slug = DEFAULT_EXAM_SLUG
