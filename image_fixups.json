@@ -8,8 +8,11 @@
       }
     },
     "7": {
-      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "AVERAGE('Survey'[Response Value])"}, {"label": "2", "value": "Period,"}], "ordered": true},
-      "available_values": ["AVERAGE('Survey'[Response Value])", "Period,", "CALCULATE", "FILTER", "ALL('Date')"]
+      "correct_answer": {"mode": "items", "items": [{"label": "1", "value": "AVERAGE('Survey'[Response Value]),"}, {"label": "2", "value": "Period,"}]},
+      "dropdown_groups": {
+        "1": ["AVERAGE('Survey'[Response Value]),", "AVERAGEA('Question'[Question Text]),", "AVERAGEX(VALUES('Survey'[Customer Key]),"],
+        "2": ["LastCurrentDate,", "NumberOfMonths,", "Period,"]
+      }
     },
     "9": {
       "correct_answer": {"mode": "items", "items": [{"label": "CREATE", "value": "TABLE"}, {"label": "expression", "value": "CASE"}, {"label": "condition", "value": "WHEN(ListPrice > 50 AND ListPrice < 1000) THEN 'medium'"}]},
