@@ -65,10 +65,7 @@
     },
     "198": {
       "correct_answer": {"mode": "items", "items": [{"label": "Datasource1", "value": "A Dataflow Gen2"}, {"label": "Datasource2", "value": "An eventstream"}]},
-      "dropdown_groups": {
-        "Datasource1": ["A Dataflow Gen2", "An eventstream", "A pipeline", "A Spark notebook"],
-        "Datasource2": ["A Dataflow Gen2", "An eventstream", "A pipeline", "A Spark notebook"]
-      }
+      "available_values": ["A Dataflow Gen1", "A Dataflow Gen2", "A notebook", "A pipeline with a Copy activity", "An eventstream"]
     },
     "62": {
       "correct_answer": {"mode": "items", "items": [{"label": "User1", "value": "ReadAll"}, {"label": "User2", "value": "ReadData"}]},
@@ -401,10 +398,11 @@
       }
     },
     "183": {
-      "correct_answer": {"mode": "items", "items": [{"label": "PriceRange =", "value": "CASE"}, {"label": "before '$250+'", "value": "ELSE"}]},
+      "correct_answer": {"mode": "items", "items": [{"label": "PriceRange =", "value": "CASE"}, {"label": "before '$250+'", "value": "ELSE"}, {"label": "after '$250+'", "value": "END"}]},
       "dropdown_groups": {
         "PriceRange =": ["BEGIN", "CASE", "IF", "SWITCH"],
-        "before '$250+'": ["ELSE", "END", "THEN", "WHEN"]
+        "before '$250+'": ["ELSE", "END", "THEN", "WHEN"],
+        "after '$250+'": ["ELSE", "END", "THEN", "WHEN"]
       }
     },
     "190": {
@@ -427,10 +425,10 @@
       "available_values": ["weatherdata", "| extend Delta_temperature = Temperature - prev(Temperature)", "| summarize Delta_temperature = sum(Temperature) -sum(prev(Temperature)) by Datetime", "| sort by Datetime asc", "| where City == 'Copenhagen'", "| filter Datetime > ago(30d)"]
     },
     "197": {
-      "correct_answer": {"mode": "items", "items": [{"label": "window function", "value": "Row_window_session"}, {"label": "comparison operator", "value": "=="}]},
+      "correct_answer": {"mode": "items", "items": [{"label": "window function", "value": "Row_window_session"}, {"label": "comparison operator", "value": "!="}]},
       "dropdown_groups": {
         "window function": ["Row_cumsum", "Row_rank_dense", "Row_rank_min", "Row_window_session"],
-        "comparison operator": ["==", ">", ">="]
+        "comparison operator": ["!=", "<=", "==", ">="]
       }
     }
   }
